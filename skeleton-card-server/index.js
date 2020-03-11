@@ -3,28 +3,12 @@ const http = require('http')
 const config = require('./utils/config')
 const socketIo = require('socket.io')
 const roomdata = require('roomdata')
-const socketHandler = require('./controllers/socketHandler')
 
 const server = http.createServer(app)
 const io = socketIo(server, {
   wxEngine: 'ws ',
   pingTimeout: 120000
 })
-
-// creates client object that includes both socketId and username
-
-// const startGame = (game, users) => {
-//   switch(game.gameName) {
-//   case 'werewolf':
-//     break
-//   case 'seawitched':
-//     break
-//   case 'mafia':
-//     break
-//   case 'traitor':
-//     break
-//   }
-// }
 
 const addDataToRoom = (socket, dataKey, data) => {
   roomdata.set(socket, dataKey, roomdata.get(socket, dataKey).concat(data))
@@ -37,20 +21,6 @@ const createMessageObj = (action, socket) => {
   }
 }
 
-const shuffle = array => {
-  var currentIndex = array.length, temporaryValue, randomIndex
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex -= 1
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex]
-    array[currentIndex] = array[randomIndex]
-    array[randomIndex] = temporaryValue
-  }
-  return array
-}
 
 const createNewUserObj = (socket) => {
   return {
@@ -79,18 +49,14 @@ const SET_AVAILABLE_ROOMS = 'skeleton-card/redux/ducks/socket/SET_AVAILABLE_ROOM
 const SET_HOST = 'skeleton-card/redux/ducks/session/SET_HOST'
 const LOAD_EXISTING_MESSAGES = 'skeleton-card/redux/ducks/session/LOAD_EXISTING_MESSAGES'
 const SET_CLIENTS_IN_ROOM = 'skeleton-card/redux/ducks/session/SET_CLIENTS_IN_ROOM'
-const DISPATCH_GAME_TO_CLIENTS = 'skeleton-card/redux/ducks/session/DISPATCH_GAME_TO_CLIENTS'
 const DISPERSE_ROOM_MESSAGE_TO_CLIENTS = 'skeleton-card/redux/ducks/session/DISPERSE_ROOM_MESSAGE_TO_CLIENTS'
 const LEAVE_ROOM_SUCCESS = 'skeleton-card/redux/ducks/socket/LEAVE_ROOM_SUCCESS'
-const TRIGGER_REDUX_ACTION = 'skeleton-card/redux/ducks/socket/TRIGGER_REDUX_ACTION'
 const REMOVE_CLIENT_FROM_ROOM = 'skeleton-card/redux/ducks/session/REMOVE_CLIENT_FROM_ROOM'
 
 // server actions
 const SET_ROOM = 'server/SET_ROOM'
 const DISPATCH_ROOM_MESSAGE_TO_SOCKET = 'server/DISPATCH_ROOM_MESSAGE_TO_SOCKET'
-const DISPATCH_GAME_TO_SOCKET = 'server/DISPATCH_GAME_TO_SOCKET'
 const SET_SOCKET_USER = 'server/SET_SOCKET_USER'
-const DISPATCH_START_GAME_TO_SOCKET = 'server/DISPATCH_START_GAME_TO_SOCKET'
 const DISPATCH_LEAVE_ROOM_TO_SOCKET = 'server/DISPATCH_LEAVE_ROOM_TO_SOCKET'
 
 io.on('connection', function(socket) {
@@ -140,39 +106,6 @@ io.on('connection', function(socket) {
     case 'disconnect':
       console.log('client disconnected')
       break
-    case DISPATCH_GAME_TO_SOCKET:
-      roomdata.set(socket, 'currentGame', action.payload.game)
-      emitActionToRoom(action.payload.room, DISPATCH_GAME_TO_CLIENTS, action.payload.game)
-      break
-    case DISPATCH_START_GAME_TO_SOCKET:
-    {
-      const selectedGame = action.payload.selectedGame
-      const clients = action.payload.clients
-      const roleDistribution = selectedGame.roleDistribution.filter(roles => roles.players === clients.length)
-      console.log('Time to start game!!!!')
-      console.log('the game is', selectedGame.gameName)
-      switch(selectedGame.gameName){
-      case 'seawitched':
-        console.log('roles:', roleDistribution)
-        console.log('clients:', clients)
-        console.log(roleDistribution.map(role => {
-          if (Object.getOwnPropertyNames(role) !== 'players'){
-            console.log('role name:', Object.keys(role))
-            console.log('role count', Object.values(role))
-          }
-        }))
-        break
-      case 'traitor':
-        break
-      case 'werewolf':
-        break
-      case 'mafia':
-        break
-      default:
-        console.log('game not found')
-      }
-      break
-    }
     default:
       console.log('no matching action')
       socket.emit('no matching action')
