@@ -25,3 +25,15 @@ Removes any current build in the back-end directory, creates a new build in the 
 To connect to you MongoDB, create a file called .env in the skeleton-card-server project directory, and add:
 
 MONGODB_URI=**YOUR_MONGO_DB_CONNECTION_STRING_HERE**
+
+Make sure .env is in your .gitignore
+
+To deploy on Heroku, look up Heroku documentation to set up Heroku CLI and run heroku create in the skeleton-card-server directory.
+
+In the newly-created Heroku project, you'll have to add the MONGODB_URI from your ..env file to the Heroku projects configs.
+
+Then, run:
+
+### `yarn run build:full`
+
+Runs the build command above then deploys the entire application to Heroku.
