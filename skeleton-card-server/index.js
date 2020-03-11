@@ -21,7 +21,6 @@ const createMessageObj = (action, socket) => {
   }
 }
 
-
 const createNewUserObj = (socket) => {
   return {
     userId: socket.userId,
@@ -51,6 +50,7 @@ const LOAD_EXISTING_MESSAGES = 'skeleton-card/redux/ducks/session/LOAD_EXISTING_
 const SET_CLIENTS_IN_ROOM = 'skeleton-card/redux/ducks/session/SET_CLIENTS_IN_ROOM'
 const DISPERSE_ROOM_MESSAGE_TO_CLIENTS = 'skeleton-card/redux/ducks/session/DISPERSE_ROOM_MESSAGE_TO_CLIENTS'
 const LEAVE_ROOM_SUCCESS = 'skeleton-card/redux/ducks/socket/LEAVE_ROOM_SUCCESS'
+const TRIGGER_REDUX_ACTION = 'skeleton-card/redux/ducks/socket/TRIGGER_REDUX_ACTION'
 const REMOVE_CLIENT_FROM_ROOM = 'skeleton-card/redux/ducks/session/REMOVE_CLIENT_FROM_ROOM'
 
 // server actions
@@ -85,7 +85,6 @@ io.on('connection', function(socket) {
         addDataToRoom(socket, 'userArray', newUserObj)
       }
       emitActionToSocket(socket, LOAD_EXISTING_MESSAGES, roomdata.get(socket, 'messages'))
-      // socket.emit('action', { type: 'skeleton-card/redux/ducks/session/LOAD_EXISTING_MESSAGES', payload: roomdata.get(socket, 'messages') })
       emitActionToRoom(action.payload, SET_CLIENTS_IN_ROOM, roomdata.get(socket, 'userArray'))
       roomdata.get(socket, 'currentGame') ? emitActionToRoom(action.payload, 'skeleton-card/redux/ducks/session/DISPATCH_GAME_TO_CLIENTS', roomdata.get(socket, 'currentGame')) : null
       break
@@ -99,7 +98,7 @@ io.on('connection', function(socket) {
     }
     case DISPATCH_LEAVE_ROOM_TO_SOCKET:
       emitActionToRoom(action.payload, REMOVE_CLIENT_FROM_ROOM, socket.id)
-      roomdata.get(socket, 'userArray').length <= 1 ? roomdata.set(socket, 'userArray', null) : roomdata.set(socket, 'userArray', roomdata.get(socket, 'userArray').filter(user => user.socketId !== socket.id))
+      roomdata.get(socket, 'userArray').length <= 1 ? roomdata.set(socket, 'userArray', []) : roomdata.set(socket, 'userArray', roomdata.get(socket, 'userArray').filter(user => user.socketId !== socket.id))
       roomdata.leaveRoom(socket)
       emitActionToSocket(socket, LEAVE_ROOM_SUCCESS)
       break
