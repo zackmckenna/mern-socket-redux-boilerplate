@@ -29,12 +29,6 @@ const NavbarTop = () => {
               <MDBNavLink to='/'>Home</MDBNavLink>
             </MDBNavItem>
             <MDBNavItem>
-              <MDBNavLink to="/lobby">Lobby</MDBNavLink>
-            </MDBNavItem>
-            <MDBNavItem>
-              <MDBNavLink to="#!">Pricing</MDBNavLink>
-            </MDBNavItem>
-            <MDBNavItem>
               <LeaveRoomButton/>
             </MDBNavItem>
             <MDBNavItem>

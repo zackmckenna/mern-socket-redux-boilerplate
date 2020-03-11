@@ -46,20 +46,7 @@ const Home = (props) => {
     if(props.room) {
       return (
         <>
-          <h1>{props.session.selectedGame ? props.session.selectedGame.gameName : 'Choose a game'}</h1>
           <h2>Current Room: {props.room}</h2>
-          {props.session.host ? <p>You are the host</p> : null }
-          <MDBBtnGroup>
-            {props.games.games.map(game => {
-              return (
-                <MDBBtn
-                  onClick={(event) => handleChangeGameClick(event)}
-                  value={game.gameName}
-                  key={game.gameName}>{game.gameName}</MDBBtn>
-              )
-            })}
-          </MDBBtnGroup>
-          <MDBBtn onClick={() => handleStartGameClick()}>Start Game</MDBBtn>
           <h2>Users</h2>
           {/* {props.session.selectedGame ? <h4>Must have at least {props.session.selectedGame.minPlayers} to play.</h4> : ''} */}
           {props.session.clients ? props.session.clients.map((client, index) => <p key={index}>{client.username}</p>) : null}
