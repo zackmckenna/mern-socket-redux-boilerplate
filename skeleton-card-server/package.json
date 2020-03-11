@@ -7,7 +7,7 @@
     "watch": "NODE_ENV=production nodemon index.js",
     "lint": "eslint .",
     "test": "NODE_ENV=test jest --verbose",
-    "build:ui": "rm -rf build && cd ../skeleton-card && yarn run build --prod && cp -r build ../skeleton-card-server/",
+    "build:ui": "rm -rf build && cd ../skeleton-card-react && yarn run build --prod && cp -r build ../skeleton-card-server/",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail"
